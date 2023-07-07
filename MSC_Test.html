@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minecraft Skin Customizer</title>
+  <style>
+    /* Add some basic styling to the UI */
+    .layer {
+      display: inline-block;
+      padding: 10px;
+    }
+  </style>
+  <script>
+    // JavaScript code for merging selected layers
+    function mergeLayers() {
+      var baseImage = new Image();
+      baseImage.onload = function() {
+        var selectedLayers = [];
+        var dropdowns = document.getElementsByClassName('layer-select');
+
+        // Collect the selected layers from the dropdown menus
+        var numLoaded = 0;
+        for (var i = 0; i < dropdowns.length; i++) {
+          var layerPath = dropdowns[i].value;
+          if (layerPath) {
+            var layer = new Image();
+            layer.onload = function() {
+              numLoaded++;
+              selectedLayers.push(layer);
+              if (numLoaded === dropdowns.length) {
+                // All layers are loaded, proceed with merging
+                mergeImages(baseImage, selectedLayers);
+              }
+            };
+            layer.src = layerPath;
+          } else {
+            numLoaded++;
+          }
+        }
+      };
+      baseImage.src = document.getElementById('base-select').value;
+    }
+
+    // Merge the loaded layers
+    function mergeImages(baseImage, layers) {
+      // Prepare a canvas to merge the images
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
+
+      // Set the canvas dimensions based on the base image
+      canvas.width = baseImage.width;
+      canvas.height = baseImage.height;
+
+      // Draw the base image on the canvas
+      ctx.drawImage(baseImage, 0, 0);
+
+      // Apply modifications to the base image
+      var baseSaturation = parseFloat(document.getElementById('base-saturation').value);
+      var baseBrightness = parseFloat(document.getElementById('base-brightness').value);
+      var baseHue = parseInt(document.getElementById('base-hue').value);
+
+      // Apply saturation adjustment to the base image
+      ctx.globalCompositeOperation = 'saturation';
+      ctx.fillStyle = 'hsl(0, 100%, ' + baseSaturation + '%)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Apply brightness adjustment to the base image
+      ctx.globalCompositeOperation = 'brightness';
+      ctx.fillStyle = 'hsl(0, 0%, ' + baseBrightness + '%)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Apply hue adjustment to the base image
+      ctx.globalCompositeOperation = 'hue';
+      ctx.fillStyle = 'hsl(' + baseHue + ', 100%, 50%)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Apply modifications to each selected layer
+      layers.forEach(function(layer) {
+        // Get the modification values for this layer
+        var saturation = parseFloat(document.getElementById('hair-saturation').value);
+        var brightness = parseFloat(document.getElementById('hair-brightness').value);
+        var hue = parseInt(document.getElementById('hair-hue').value);
+
+        // Draw the layer on the canvas
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.drawImage(layer, 0, 0);
+
+        // Apply saturation adjustment to the layer
+        ctx.globalCompositeOperation = 'saturation';
+        ctx.fillStyle = 'hsl(0, 100%, ' + saturation + '%)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Apply brightness adjustment to the layer
+        ctx.globalCompositeOperation = 'brightness';
+        ctx.fillStyle = 'hsl(0, 0%, ' + brightness + '%)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Apply hue adjustment to the layer
+        ctx.globalCompositeOperation = 'hue';
+        ctx.fillStyle = 'hsl(' + hue + ', 100%, 50%)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      });
+
+      // Convert the canvas to a data URL
+      var mergedImage = canvas.toDataURL();
+
+      // Display the merged image
+      var resultImage = document.getElementById('result');
+      resultImage.src = mergedImage;
+    }
+  </script>
+</head>
+<body>
+  <h1>Minecraft Skin Customizer</h1>
+
+  <h2>Base</h2>
+  <div class="layer">
+    <label>
+      Base Image:
+      <select id="base-select">
+        <option value="">None</option>
+        <option value="Images/Base/BaseTest.png">Base Test</option>
+        <!-- Add more base options as needed -->
+      </select>
+    </label>
+    <div>
+      <label for="base-saturation">Saturation:</label>
+      <input type="range" id="base-saturation" min="0" max="200" value="100">
+      <input type="number" id="base-saturation-value" min="0" max="200" value="100" oninput="base-saturation.value = base-saturation-value.value">
+    </div>
+    <div>
+      <label for="base-brightness">Brightness:</label>
+      <input type="range" id="base-brightness" min="0" max="200" value="100">
+      <input type="number" id="base-brightness-value" min="0" max="200" value="100" oninput="base-brightness.value = base-brightness-value.value">
+    </div>
+    <div>
+      <label for="base-hue">Hue:</label>
+      <input type="range" id="base-hue" min="0" max="360" value="0">
+      <input type="number" id="base-hue-value" min="0" max="360" value="0" oninput="base-hue.value = base-hue-value.value">
+    </div>
+  </div>
+
+  <h2>Layers</h2>
+  <div class="layer">
+    <label>
+      Hair:
+      <select id="hair-select" class="layer-select">
+        <option value="">None</option>
+        <option value="Images/layers/hair/Hair1.png">Hair 1</option>
+        <option value="Images/layers/hair/Hair2.png">Hair 2</option>
+        <!-- Add more hair options as needed -->
+      </select>
+    </label>
+    <div>
+      <label for="hair-saturation">Saturation:</label>
+      <input type="range" id="hair-saturation" min="0" max="200" value="100">
+      <input type="number" id="hair-saturation-value" min="0" max="200" value="100" oninput="hair-saturation.value = hair-saturation-value.value">
+    </div>
+    <div>
+      <label for="hair-brightness">Brightness:</label>
+      <input type="range" id="hair-brightness" min="0" maxApologies for the incomplete code. Here's the rest of it:
+
+```html
+      <input type="range" id="hair-brightness" min="0" max="200" value="100">
+      <input type="number" id="hair-brightness-value" min="0" max="200" value="100" oninput="hair-brightness.value = hair-brightness-value.value">
+    </div>
+    <div>
+      <label for="hair-hue">Hue:</label>
+      <input type="range" id="hair-hue" min="0" max="360" value="0">
+      <input type="number" id="hair-hue-value" min="0" max="360" value="0" oninput="hair-hue.value = hair-hue-value.value">
+    </div>
+  </div>
+  <div class="layer">
+    <label>
+      Body:
+      <select id="body-select" class="layer-select">
+        <option value="">None</option>
+        <option value="Images/layers/body/Body1.png">Body 1</option>
+        <option value="Images/layers/body/Body2.png">Body 2</option>
+        <!-- Add more body options as needed -->
+      </select>
+    </label>
+    <div>
+      <label for="body-saturation">Saturation:</label>
+      <input type="range" id="body-saturation" min="0" max="200" value="100">
+      <input type="number" id="body-saturation-value" min="0" max="200" value="100" oninput="body-saturation.value = body-saturation-value.value">
+    </div>
+    <div>
+      <label for="body-brightness">Brightness:</label>
+      <input type="range" id="body-brightness" min="0" max="200" value="100">
+      <input type="number" id="body-brightness-value" min="0" max="200" value="100" oninput="body-brightness.value = body-brightness-value.value">
+    </div>
+    <div>
+      <label for="body-hue">Hue:</label>
+      <input type="range" id="body-hue" min="0" max="360" value="0">
+      <input type="number" id="body-hue-value" min="0" max="360" value="0" oninput="body-hue.value = body-hue-value.value">
+    </div>
+  </div>
+
+  <!-- Add more layer options as needed -->
+
+  <button onclick="mergeLayers()">Generate</button>
+
+  <h2>Result</h2>
+  <img id="result" alt="Merged Image">
+
+</body>
+</html>
